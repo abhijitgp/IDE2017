@@ -1,6 +1,5 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
-
 import pandas as pd
 import os
 import re
@@ -30,7 +29,7 @@ def get_File(argv1):
     f['T1']=pd.to_datetime(f['T1'],format='%d/%b/%Y:%H:%M:%S')
     return f
 
-def xtractResource(string):
+def xtract_Resource(string):
     return string.split()[1]
 
 def get_BusyTimes(series,maxm,times,frequency): 
@@ -63,7 +62,7 @@ def get_resources(data,resources,top):
     data.Bytes=data.Bytes.apply(fix_Bytes)
     subdata = data[['Resource','Bytes']].groupby(['Resource'], as_index=True).agg(['sum'])
     rsrc = subdata.iloc[:,0].nlargest(top).reset_index()
-    rsrc['split']=map(xtractResource,rsrc.Resource)
+    rsrc['split']=map(xtract_Resource,rsrc.Resource)
     rsrc = rsrc.iloc[:,[2]]
     with open(resources,"w") as f:
         rsrc.to_csv(f,sep=' ',header=None, index_label=None, index=False)
@@ -108,6 +107,8 @@ def get_blocked(data,blocked):
                 t3 = d5.index[2] # 3rd offense in 20 sec period
                 breacher = data[(data.index>t3)&(data.index<=(t3+timedelta(minutes=5)))]
                 breacher = breacher.query('IP==@ip')
+#                breacher.T1 = map(lambda x:'['+datetime.strftime(x,'%d/%b/%Y %H:%M:%S'),breacher.T1)
+                breacher.T1 = breacher.T1.dt.strftime('[%d/%b/%y:%H:%M:%S')
                 tlist=[ip,t3]
                 iptable.loc[len(iptable)]=tlist
                 with open(blocked,'a') as b:
