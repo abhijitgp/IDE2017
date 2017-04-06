@@ -1,1 +1,0 @@
-207.109.29.70 [01/Jul/95:01:28:41 -0400] "GET /images/WORLD-logosmall.gif HTTP/1.0" 200 669
